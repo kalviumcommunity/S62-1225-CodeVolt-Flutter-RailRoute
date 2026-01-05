@@ -184,3 +184,65 @@ Firebase ensures real-time data synchronization and scalable backend support, wh
 - GitHub Repository with commits  
 - Final APK  
 
+
+## Sprint 2 – Widget Tree & Reactive UI Implementation (Today’s Progress)
+
+### Overview
+As part of Sprint 2, the focus for today was to understand and implement Flutter’s
+**widget tree structure** and **reactive UI model** within the RailRoute application.
+A simple interactive UI was used to demonstrate how Flutter rebuilds widgets in
+response to state changes.
+
+---
+
+### What Was Implemented
+
+- Identified a core screen in the RailRoute Flutter app to demonstrate widget hierarchy
+- Structured the UI using nested widgets such as `MaterialApp`, `Scaffold`, `Center`, and `Column`
+- Converted the screen into a `StatefulWidget` to support dynamic UI updates
+- Added a state variable to represent changing UI data
+- Implemented a button that updates state using `setState()`
+- Observed automatic UI updates without manually refreshing the screen
+
+---
+
+### Widget Tree Structure Used
+
+MaterialApp
+┗ HomePage (StatefulWidget)
+┗ Scaffold
+┣ AppBar
+┗ Body
+┗ Center
+┗ Column
+┣ Text
+┗ ElevatedButton
+
+yaml
+Copy code
+
+This hierarchy demonstrates how Flutter organizes UI elements into a tree where
+each widget acts as a parent or child, defining layout and structure.
+
+---
+
+### Reactive UI Demonstration
+
+- A button interaction updates a state variable
+- `setState()` notifies Flutter of the state change
+- Flutter rebuilds only the affected widgets
+- The updated state is immediately reflected in the UI
+
+This confirms Flutter’s reactive model, where UI is automatically synchronized
+with application state.
+
+---
+
+### Outcome
+This implementation provided a clear understanding of:
+- How Flutter builds UI using a widget tree
+- How parent–child relationships affect layout
+- How Flutter efficiently updates UI components using `setState()`
+
+These concepts will be foundational for handling real-time Firebase updates and
+dynamic train status data in upcoming sprints.
