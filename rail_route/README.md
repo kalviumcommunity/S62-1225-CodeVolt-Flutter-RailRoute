@@ -127,3 +127,42 @@ Building a responsive layout required understanding Flutter’s layout constrain
 - [x] MediaQuery used
 - [x] LayoutBuilder applied
 - [x] Tested on multiple devices
+
+---
+
+## Flutter Hot Reload & Debugging Tools Demo
+
+### Project Overview
+This project demonstrates Flutter’s Hot Reload feature,
+the Debug Console, and Flutter DevTools for debugging and
+performance analysis using a simple counter application.
+
+---
+
+### Hot Reload
+Hot Reload allows developers to instantly apply code
+changes to a running Flutter application without
+restarting it or losing application state.
+
+**Steps Performed**
+1. Ran the Flutter app using `flutter run`
+2. Modified a widget’s text and color
+3. Saved the file
+4. Observed instant UI update without app restart
+
+**Example Change**
+```dart
+// Before
+Text('Hot Reload Demo');
+
+// After
+Text('Welcome to Hot Reload!');
+```
+
+### ✅ Final Status
+- [x] Code ready  
+- [x] README ready  
+- [x] Teammate can run & screenshot  
+- [x] Task fully satisfied  
+
+---
