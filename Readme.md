@@ -184,3 +184,24 @@ Firebase ensures real-time data synchronization and scalable backend support, wh
 - GitHub Repository with commits  
 - Final APK  
 
+# Stateless vs Stateful Widgets – Flutter Sprint #2
+
+A simple demo app is built where a static header is displayed using a StatelessWidget, and an interactive counter is implemented using a StatefulWidget.
+
+The goal of this task is to understand how Flutter manages UI updates and how state drives reactivity in an application.
+
+---
+
+## 🧩 Concepts Covered`
+
+### 🔹 Stateless Widget
+A `StatelessWidget` does not hold or manage any mutable state.  
+Once built, its UI remains the same unless rebuilt by its parent.
+
+**Use cases:**
+- Static text
+- Icons
+- Headers
+- Labels
+
+
