@@ -166,3 +166,67 @@ Text('Welcome to Hot Reload!');
 - [x] Task fully satisfied  
 
 ---
+## 📘 Flutter Scrollable Views Demo (ListView & GridView)
+
+### Overview
+This module demonstrates how to build efficient and smooth scrollable layouts in Flutter using `ListView` and `GridView`. These widgets are essential for displaying large or dynamic data sets in a structured and performance-friendly manner.
+
+---
+
+### Scrollable Widgets Used
+
+### ListView
+```dart
+ListView.builder(
+  itemCount: 10,
+  itemBuilder: (context, index) {
+    return ListTile(
+      leading: CircleAvatar(child: Text('${index + 1}')),
+      title: Text('Item $index'),
+      subtitle: Text('This is item number $index'),
+    );
+  },
+);
+```
+Used to display a vertically scrollable list. The builder constructor ensures that only visible list items are rendered, improving performance.
+
+**GridView**
+```dart
+GridView.builder(
+  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+    crossAxisCount: 2,
+    crossAxisSpacing: 10,
+    mainAxisSpacing: 10,
+  ),
+  itemCount: 6,
+  itemBuilder: (context, index) {
+    return Container(
+      child: Center(child: Text('Tile $index')),
+    );
+  },
+);
+```
+Used to display items in a grid format, suitable for dashboards, galleries, or card-based layouts.
+
+### Layout Strategy
+- Horizontal ListView used for card-style scrolling
+- Vertical GridView used for evenly spaced tiles
+- Nested scrolling handled using shrinkWrap and scroll physics
+
+### Testing
+- Android Emulator (Phone)
+- Tablet Emulator
+Scrolling behavior was smooth, and items rendered efficiently without layout overflow issues.
+
+### Reflection
+Using ListView and GridView helps manage large collections of widgets efficiently. Builder constructors improve performance by creating widgets only when they are visible on screen, reducing memory usage.
+
+### Checklist
+
+- [x] ListView implemented
+- [x] GridView implemented
+- [x] Builder constructors used
+- [x] Smooth scrolling verified
+- [x] Tested on multiple screen sizes
+
+---
