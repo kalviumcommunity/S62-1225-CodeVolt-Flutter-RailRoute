@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'screens/user_input_form.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -11,6 +12,15 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      
+      title: 'Flutter User Input Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: const UserInputForm(),
+    );
+  }
+
       title: 'Flutter Hot Reload Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -85,5 +95,4 @@ class _HomePageState extends State<HomePage> {
         child: const Icon(Icons.add),
       ),
     );
-  }
 }
