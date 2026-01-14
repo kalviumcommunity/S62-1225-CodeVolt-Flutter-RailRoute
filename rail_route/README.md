@@ -230,3 +230,77 @@ Using ListView and GridView helps manage large collections of widgets efficientl
 - [x] Tested on multiple screen sizes
 
 ---
+
+## 📘 Flutter State Management Demo (Stateful vs Stateless)
+
+### Overview
+This module demonstrates the fundamental difference between `StatelessWidget` and `StatefulWidget` in Flutter and how local state is managed using the `setState()` method. A simple counter application is used to show how UI updates reactively when the state changes.
+
+---
+
+### Widgets Used
+
+### Stateless Widget
+```dart
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: StateManagementDemo(),
+    );
+  }
+}
+```
+Used for widgets that do not change once built. Stateless widgets depend only on the input data and remain constant throughout their lifecycle.
+
+### Stateful Widget
+``` dart
+class StateManagementDemo extends StatefulWidget {
+  @override
+  State<StateManagementDemo> createState() => _StateManagementDemoState();
+```
+Used when the UI needs to update dynamically in response to user interactions or internal data changes.
+
+### State Update Using setState()
+``` dart
+setState(() {
+  _counter++;
+});
+```
+
+The `setState()` method notifies Flutter that the widget’s state has changed, triggering a rebuild of only the affected parts of the UI rather than the entire application.
+
+### UI Behavior
+
+- Counter value updates on button press
+- Background color changes when the counter reaches a threshold value
+- UI reacts instantly without restarting the app
+- This demonstrates Flutter’s reactive rendering model.
+
+### Layout Strategy
+
+- `Column` used for vertical alignment of UI elements
+- `Row` used for action buttons
+- Conditional styling applied based on state values
+- Centered layout for better visual clarity
+
+### Testing
+
+- Android Emulator (Phone)
+- Physical Android Device
+
+The UI updated smoothly on each state change, and conditional styling behaved as expected without performance issues.
+
+### Reflection
+
+Stateful widgets allow Flutter apps to react dynamically to user actions. Using `setState()` correctly ensures efficient UI updates, while improper usage can lead to unnecessary rebuilds and reduced performance.
+
+### Checklist
+
+- [x] StatelessWidget implemented
+- [x] StatefulWidget implemented
+- [x] Local state management using setState()
+- [x] Conditional UI update based on state
+- [x] UI updates verified through testing
+
+---
