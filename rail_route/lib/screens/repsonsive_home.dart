@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
+import '../widgets/custom_card.dart';
 
 class ResponsiveHome extends StatelessWidget {
   const ResponsiveHome({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // 📱 Screen size detection
-    final screenSize = MediaQuery.of(context).size;
-    final screenWidth = screenSize.width;
-    final screenHeight = screenSize.height;
-
+    final screenWidth = MediaQuery.of(context).size.width;
     final bool isTablet = screenWidth > 600;
     final bool isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
@@ -19,12 +16,11 @@ class ResponsiveHome extends StatelessWidget {
         title: const Text("Responsive Home"),
         centerTitle: true,
       ),
-
       body: Padding(
         padding: EdgeInsets.all(isTablet ? 24 : 16),
         child: Column(
           children: [
-            // 🧠 Header section
+            // Header
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(16),
@@ -44,30 +40,28 @@ class ResponsiveHome extends StatelessWidget {
 
             const SizedBox(height: 16),
 
-            // 📦 Main content (responsive)
+            // Responsive layout
             Expanded(
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   if (isTablet || isLandscape) {
-                    // 🧩 Two-column layout
                     return GridView.count(
                       crossAxisCount: 2,
                       crossAxisSpacing: 16,
                       mainAxisSpacing: 16,
-                      children: [
-                        contentCard("Card 1"),
-                        contentCard("Card 2"),
-                        contentCard("Card 3"),
-                        contentCard("Card 4"),
+                      children: const [
+                        ContentCard(title: "Card 1"),
+                        ContentCard(title: "Card 2"),
+                        ContentCard(title: "Card 3"),
+                        ContentCard(title: "Card 4"),
                       ],
                     );
                   } else {
-                    // 📱 Single-column layout
                     return ListView(
-                      children: [
-                        contentCard("Card 1"),
-                        contentCard("Card 2"),
-                        contentCard("Card 3"),
+                      children: const [
+                        ContentCard(title: "Card 1"),
+                        ContentCard(title: "Card 2"),
+                        ContentCard(title: "Card 3"),
                       ],
                     );
                   }
@@ -77,13 +71,15 @@ class ResponsiveHome extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            // 🔘 Footer / Action buttons
+            // Footer buttons
             Row(
               children: [
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () {},
-                    child: const Text("Action 1"),
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/demo');
+                    },
+                    child: const Text("Go to Demo"),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -96,31 +92,6 @@ class ResponsiveHome extends StatelessWidget {
               ],
             )
           ],
-        ),
-      ),
-    );
-  }
-
-  // 🔧 Reusable content widget
-  Widget contentCard(String title) {
-    return AspectRatio(
-      aspectRatio: 16 / 9,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.grey.shade200,
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Center(
-          child: FittedBox(
-            child: Text(
-              title,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
         ),
       ),
     );
