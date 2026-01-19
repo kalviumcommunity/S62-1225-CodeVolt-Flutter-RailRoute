@@ -5,6 +5,7 @@ class Student {
   Student(this.name, this.age);
 
   void introduce() {
+    // ignore: avoid_print
     print("Hi, I'm $name and I'm $age years old.");
   }
 }
