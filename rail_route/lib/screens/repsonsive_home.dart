@@ -40,11 +40,11 @@ class ResponsiveHome extends StatelessWidget {
 
             const SizedBox(height: 16),
 
-            // Responsive layout
+            // Responsive Content (LayoutBuilder)
             Expanded(
               child: LayoutBuilder(
                 builder: (context, constraints) {
-                  if (isTablet || isLandscape) {
+                  if (constraints.maxWidth > 600 || isLandscape) {
                     return GridView.count(
                       crossAxisCount: 2,
                       crossAxisSpacing: 16,
@@ -71,7 +71,7 @@ class ResponsiveHome extends StatelessWidget {
 
             const SizedBox(height: 12),
 
-            // Footer buttons
+            // Footer Buttons
             Row(
               children: [
                 Expanded(
