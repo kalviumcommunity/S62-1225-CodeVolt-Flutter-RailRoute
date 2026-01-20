@@ -17,7 +17,7 @@ class ResponsiveLayout extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
-            // HEADER
+            // Header
             Container(
               width: double.infinity,
               height: 140,
@@ -39,7 +39,7 @@ class ResponsiveLayout extends StatelessWidget {
 
             const SizedBox(height: 16),
 
-            // RESPONSIVE BODY
+            // Responsive Body (MediaQuery)
             Expanded(
               child: isTablet
                   ? Row(
