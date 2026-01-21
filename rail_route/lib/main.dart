@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'screens/repsonsive_home.dart';
 import 'screens/stateless_stateful_demo.dart';
+import 'screens/animation_demo_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const ResponsiveHome(),
         '/demo': (context) => const StatelessStatefulDemo(),
+        '/animations': (context) => AnimationDemoScreen(),
       },
     );
   }
