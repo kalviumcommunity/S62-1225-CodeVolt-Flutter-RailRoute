@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'screens/repsonsive_home.dart';
 import 'screens/stateless_stateful_demo.dart';
 import 'screens/animation_demo_screen.dart';
+import 'screens/bottom_nav_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -19,9 +20,13 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         colorSchemeSeed: Colors.blue,
       ),
-      initialRoute: '/',
+
+      // 🔑 BottomNavigationBar is the root
+      home: const BottomNavScreen(),
+
+      // ✅ SAME routes kept for internal navigation
       routes: {
-        '/': (context) => const ResponsiveHome(),
+        '/home': (context) => const ResponsiveHome(),
         '/demo': (context) => const StatelessStatefulDemo(),
         '/animations': (context) => AnimationDemoScreen(),
       },
