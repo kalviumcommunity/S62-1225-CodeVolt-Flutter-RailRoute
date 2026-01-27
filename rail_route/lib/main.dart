@@ -1,28 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-import 'screens/repsonsive_home.dart';
-import 'screens/stateless_stateful_demo.dart';
-import 'screens/animation_demo_screen.dart';
-import 'screens/bottom_nav_screen.dart';
+import 'screens/home_screen.dart';
+import 'screens/second_screen.dart';
 
 void main() {
-  runApp(
-    ChangeNotifierProvider(
-      create: (_) => ThemeProvider(),
-      child: const MyApp(),
-    ),
-  );
-}
-
-/// 🔁 Theme Provider
-class ThemeProvider extends ChangeNotifier {
-  ThemeMode mode = ThemeMode.system;
-
-  void toggleTheme(bool isDark) {
-    mode = isDark ? ThemeMode.dark : ThemeMode.light;
-    notifyListeners();
-  }
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -30,43 +12,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = context.watch<ThemeProvider>();
-
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Sprint 2 – Responsive Demo',
+      title: 'Multi-Screen Navigation Demo',
 
-      // 🌞 Light Theme
-      theme: ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.light,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.blue,
-          brightness: Brightness.light,
-        ),
-      ),
+      // 🔑 Initial screen
+      initialRoute: '/',
 
-      // 🌙 Dark Theme
-      darkTheme: ThemeData(
-        useMaterial3: true,
-        brightness: Brightness.dark,
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: Colors.blue,
-          brightness: Brightness.dark,
-        ),
-      ),
-
-      // 🔄 Dynamic switching
-      themeMode: themeProvider.mode,
-
-      // 🔑 BottomNavigationBar is the root
-      home: const BottomNavScreen(),
-
-      // ✅ SAME routes kept for internal navigation
+      // 🛣️ Named routes
       routes: {
-        '/home': (context) => const ResponsiveHome(),
-        '/demo': (context) => const StatelessStatefulDemo(),
-        '/animations': (context) => AnimationDemoScreen(),
+        '/': (context) => const HomeScreen(),
+        '/second': (context) => const SecondScreen(),
       },
     );
   }
