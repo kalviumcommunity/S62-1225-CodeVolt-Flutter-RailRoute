@@ -12,14 +12,9 @@ class HomeScreen extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: () {
-            // ➡️ Navigate to second screen using named route
-            Navigator.pushNamed(
-              context,
-              '/second',
-              arguments: 'Hello from Home Screen!',
-            );
+            Navigator.pushNamed(context, '/state');
           },
-          child: const Text('Go to Second Screen'),
+          child: const Text('Go to State Handling Screen'),
         ),
       ),
     );

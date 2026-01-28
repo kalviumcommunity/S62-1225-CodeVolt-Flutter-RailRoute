@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'screens/state_handling_screen.dart';
 import 'screens/home_screen.dart';
 import 'screens/second_screen.dart';
 
@@ -23,6 +23,8 @@ class MyApp extends StatelessWidget {
       routes: {
         '/': (context) => const HomeScreen(),
         '/second': (context) => const SecondScreen(),
+        '/state': (context) => StateHandlingScreen(),
+
       },
     );
   }
