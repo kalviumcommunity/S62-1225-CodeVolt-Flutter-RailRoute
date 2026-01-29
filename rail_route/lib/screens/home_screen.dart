@@ -12,9 +12,9 @@ class HomeScreen extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: () {
-            Navigator.pushNamed(context, '/state');
+            Navigator.pushNamed(context, '/assets');
           },
-          child: const Text('Go to State Handling Screen'),
+          child: const Text('Go to Asset Demo'),
         ),
       ),
     );
