@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'screens/state_handling_screen.dart';
+
 import 'screens/home_screen.dart';
 import 'screens/second_screen.dart';
+import 'screens/state_handling_screen.dart';
+import 'screens/asset_demo_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,7 +18,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Multi-Screen Navigation Demo',
 
-      // 🔑 Initial screen
+      // 🔑 Initial route
       initialRoute: '/',
 
       // 🛣️ Named routes
@@ -24,7 +26,7 @@ class MyApp extends StatelessWidget {
         '/': (context) => const HomeScreen(),
         '/second': (context) => const SecondScreen(),
         '/state': (context) => StateHandlingScreen(),
-
+        '/assets': (context) => const AssetDemoScreen(),
       },
     );
   }
