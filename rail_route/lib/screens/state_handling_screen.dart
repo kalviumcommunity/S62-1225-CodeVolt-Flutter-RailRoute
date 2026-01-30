@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../services/data_service.dart';
+import 'add_item_screen.dart';
 
 class StateHandlingScreen extends StatelessWidget {
   StateHandlingScreen({super.key});
@@ -10,59 +12,48 @@ class StateHandlingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('State Handling Demo'),
+        title: const Text('Firestore Items'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const AddItemScreen(),
+                ),
+              );
+            },
+          ),
+        ],
       ),
-      body: FutureBuilder<List<String>>(
-        future: _dataService.fetchItems(),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: _dataService.getItems(),
         builder: (context, snapshot) {
-
-          // ⏳ LOADING STATE
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+            return const Center(child: CircularProgressIndicator());
           }
 
-          // ❌ ERROR STATE
-          if (snapshot.hasError) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text("Something went wrong"),
-                  const SizedBox(height: 10),
-                  ElevatedButton(
-                    onPressed: () {
-                      // rebuilds the widget
-                      (context as Element).markNeedsBuild();
-                    },
-                    child: const Text("Retry"),
-                  ),
-                ],
-              ),
-            );
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return const Center(child: Text('No items found'));
           }
 
-          // 📭 EMPTY STATE
-          if (!snapshot.hasData || snapshot.data!.isEmpty) {
-            return const Center(
-              child: Text(
-                "No items found.\nTap + to add your first item!",
-                textAlign: TextAlign.center,
-              ),
-            );
-          }
-
-          // ✅ SUCCESS STATE
-          final items = snapshot.data!;
+          final docs = snapshot.data!.docs;
 
           return ListView.builder(
-            itemCount: items.length,
+            itemCount: docs.length,
             itemBuilder: (context, index) {
+              final data = docs[index].data() as Map<String, dynamic>;
+              final id = docs[index].id;
+
               return ListTile(
-                leading: const Icon(Icons.check_circle, color: Colors.green),
-                title: Text(items[index]),
+                title: Text(data['title']),
+                subtitle: Text(data['description']),
+                trailing: IconButton(
+                  icon: const Icon(Icons.delete),
+                  onPressed: () => _dataService.deleteItem(id),
+                ),
               );
             },
           );
