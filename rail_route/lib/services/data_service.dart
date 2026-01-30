@@ -1,18 +1,25 @@
-import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DataService {
-  Future<List<String>> fetchItems() async {
-    await Future.delayed(const Duration(seconds: 2));
+  final CollectionReference _itemsCollection =
+      FirebaseFirestore.instance.collection('items');
 
-    // 🔁 Uncomment ONE at a time to test states
+  // Get all items as a stream
+  Stream<QuerySnapshot> getItems() {
+    return _itemsCollection.orderBy('createdAt', descending: true).snapshots();
+  }
 
-    // 1️⃣ SUCCESS
-    return ['Apple', 'Banana', 'Orange'];
+  // Add a new item
+  Future<void> addItem(String title, String description) async {
+    await _itemsCollection.add({
+      'title': title,
+      'description': description,
+      'createdAt': FieldValue.serverTimestamp(),
+    });
+  }
 
-    // 2️⃣ EMPTY STATE
-    // return [];
-
-    // 3️⃣ ERROR STATE
-    // throw Exception("Failed to load data");
+  // Delete an item by document ID
+  Future<void> deleteItem(String id) async {
+    await _itemsCollection.doc(id).delete();
   }
 }

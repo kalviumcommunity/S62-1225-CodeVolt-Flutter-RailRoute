@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class UserInputForm extends StatefulWidget {
   const UserInputForm({super.key});
@@ -10,27 +11,45 @@ class UserInputForm extends StatefulWidget {
 class _UserInputFormState extends State<UserInputForm> {
   final _formKey = GlobalKey<FormState>();
 
-  final TextEditingController _nameController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  bool isLogin = true;
+  bool isLoading = false;
 
   @override
   void dispose() {
-    _nameController.dispose();
     _emailController.dispose();
+    _passwordController.dispose();
     super.dispose();
   }
 
-  void _submitForm() {
-    if (_formKey.currentState!.validate()) {
+  Future<void> _submitForm() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => isLoading = true);
+
+    try {
+      if (isLogin) {
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+        );
+      } else {
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+        );
+      }
+    } on FirebaseAuthException catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Form Submitted Successfully!'),
-          backgroundColor: Colors.green,
+        SnackBar(
+          content: Text(e.message ?? 'Authentication failed'),
+          backgroundColor: Colors.red,
         ),
       );
-
-      _nameController.clear();
-      _emailController.clear();
+    } finally {
+      setState(() => isLoading = false);
     }
   }
 
@@ -38,7 +57,7 @@ class _UserInputFormState extends State<UserInputForm> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('User Input Form'),
+        title: Text(isLogin ? 'Login' : 'Sign Up'),
         centerTitle: true,
       ),
       body: Padding(
@@ -46,26 +65,8 @@ class _UserInputFormState extends State<UserInputForm> {
         child: Form(
           key: _formKey,
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              /// NAME FIELD
-              TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(
-                  labelText: 'Name',
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
-                    return 'Please enter your name';
-                  }
-                  return null;
-                },
-              ),
-
-              const SizedBox(height: 16),
-
-              /// EMAIL FIELD
+              /// EMAIL
               TextFormField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
@@ -75,10 +76,28 @@ class _UserInputFormState extends State<UserInputForm> {
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Please enter your email';
+                    return 'Enter your email';
                   }
                   if (!value.contains('@')) {
-                    return 'Enter a valid email address';
+                    return 'Enter a valid email';
+                  }
+                  return null;
+                },
+              ),
+
+              const SizedBox(height: 16),
+
+              /// PASSWORD
+              TextFormField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: const InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.length < 6) {
+                    return 'Password must be at least 6 characters';
                   }
                   return null;
                 },
@@ -86,11 +105,25 @@ class _UserInputFormState extends State<UserInputForm> {
 
               const SizedBox(height: 24),
 
-              /// SUBMIT BUTTON
-              Center(
-                child: ElevatedButton(
-                  onPressed: _submitForm,
-                  child: const Text('Submit'),
+              /// LOGIN / SIGNUP BUTTON
+              isLoading
+                  ? const CircularProgressIndicator()
+                  : ElevatedButton(
+                      onPressed: _submitForm,
+                      child: Text(isLogin ? 'Login' : 'Sign Up'),
+                    ),
+
+              const SizedBox(height: 12),
+
+              /// TOGGLE
+              TextButton(
+                onPressed: () {
+                  setState(() => isLogin = !isLogin);
+                },
+                child: Text(
+                  isLogin
+                      ? "Don't have an account? Sign Up"
+                      : "Already have an account? Login",
                 ),
               ),
             ],
