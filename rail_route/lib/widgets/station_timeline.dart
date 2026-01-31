@@ -23,12 +23,21 @@ class StationTimeline extends StatelessWidget {
         final isFuture = index > currentStationIndex;
 
         Color dotColor;
+        Color textColor;
+        double opacity = 1.0;
+
         if (isPassed) {
-          dotColor = Colors.grey;
+          dotColor = Theme.of(context).colorScheme.primary.withOpacity(0.4);
+          textColor = Theme.of(context).colorScheme.onSurface.withOpacity(0.5);
+          opacity = 0.5;
         } else if (isCurrent) {
           dotColor = Theme.of(context).colorScheme.primary;
+          textColor = Theme.of(context).colorScheme.onSurface;
+          opacity = 1.0;
         } else {
-          dotColor = Colors.grey.shade300;
+          dotColor = Theme.of(context).colorScheme.onSurface.withOpacity(0.1);
+          textColor = Theme.of(context).colorScheme.onSurface.withOpacity(0.3);
+          opacity = 0.4;
         }
 
         return IntrinsicHeight(
@@ -39,23 +48,31 @@ class StationTimeline extends StatelessWidget {
                 width: 40,
                 child: Column(
                   children: [
+                    const SizedBox(height: 4),
                     Container(
-                      width: 16,
-                      height: 16,
+                      width: 12,
+                      height: 12,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: dotColor,
+                        color: isCurrent ? Colors.white : dotColor,
                         border: Border.all(
-                          color: isCurrent ? Theme.of(context).colorScheme.primary : dotColor,
-                          width: isCurrent ? 3 : 2,
+                          color: dotColor,
+                          width: isCurrent ? 4 : 2,
                         ),
+                        boxShadow: isCurrent ? [
+                          BoxShadow(
+                            color: dotColor.withOpacity(0.4),
+                            blurRadius: 10,
+                            spreadRadius: 2,
+                          )
+                        ] : null,
                       ),
                     ),
                     if (index < stations.length - 1)
                       Expanded(
                         child: Container(
                           width: 2,
-                          color: isPassed ? Colors.grey : Colors.grey.shade300,
+                          color: dotColor,
                         ),
                       ),
                   ],
@@ -68,34 +85,57 @@ class StationTimeline extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        station.name,
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: isCurrent ? FontWeight.bold : FontWeight.normal,
-                          color: isFuture ? Colors.grey : null,
-                        ),
+                      Row(
+                        children: [
+                          Text(
+                            station.name,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: isCurrent ? FontWeight.w900 : FontWeight.w600,
+                              color: textColor,
+                              letterSpacing: isCurrent ? -0.5 : 0,
+                            ),
+                          ),
+                          if (isCurrent) ...[
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text(
+                                'LIVE',
+                                style: TextStyle(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.w900,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
                       ),
                       const SizedBox(height: 4),
                       Row(
                         children: [
                           Text(
-                            station.arrivalTime ?? '--',
+                            station.arrivalTime,
                             style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey[600],
+                              fontSize: 13,
+                              fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w500,
+                              color: textColor.withOpacity(textColor.opacity * 0.7),
                             ),
                           ),
-                          if (station.platform != null) ...[
-                            const SizedBox(width: 12),
-                            Text(
-                              'Platform ${station.platform}',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.grey[600],
-                              ),
+                          const SizedBox(width: 12),
+                          Text(
+                            'Platform ${station.platform}',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w500,
+                              color: textColor.withOpacity(textColor.opacity * 0.7),
                             ),
-                          ],
+                          ),
                         ],
                       ),
                     ],
