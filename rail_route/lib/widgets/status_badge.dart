@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import '../themes/app_themes.dart';
 
 class StatusBadge extends StatelessWidget {
@@ -23,7 +24,7 @@ class StatusBadge extends StatelessWidget {
         break;
       case 'delayed':
         badgeColor = AppThemes.delayAmber;
-        displayText = delayMinutes != null ? 'Delayed $delayMinutes min' : 'Delayed';
+        displayText = delayMinutes != null ? '$delayMinutes Mins Late' : 'Delayed';
         break;
       case 'cancelled':
         badgeColor = AppThemes.cancelledRed;
@@ -35,18 +36,17 @@ class StatusBadge extends StatelessWidget {
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: badgeColor.withOpacity(0.15),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: badgeColor, width: 1.5),
+        color: badgeColor.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
         displayText,
-        style: TextStyle(
+        style: GoogleFonts.outfit(
           color: badgeColor,
-          fontWeight: FontWeight.w600,
-          fontSize: 12,
+          fontWeight: FontWeight.w800,
+          fontSize: 11,
         ),
       ),
     );

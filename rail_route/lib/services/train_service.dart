@@ -123,6 +123,7 @@ class TrainService {
 
       stations.add(StationStopModel(
         name: name,
+        stationCode: code,
         arrivalTime: arrival,
         platform: platform,
         isPassed: isPassed,
@@ -169,18 +170,108 @@ class TrainService {
       name: trainName,
       status: (liveData['overallDelayMinutes'] ?? 0) > 0 ? 'delayed' : 'on time',
       delayMinutes: (liveData['overallDelayMinutes'] ?? 0),
+      travelTimeMinutes: trainInfo['travelTimeMinutes'] ?? 0,
       currentStation: currentStn,
       nextStation: nextStn,
       platform: '-',
+      sourceStationCode: trainInfo['sourceStationCode'] ?? liveData['sourceStationCode'] ?? '',
+      destinationStationCode: trainInfo['destinationStationCode'] ?? liveData['destinationStationCode'] ?? '',
       stations: stations,
       updatedAt: DateTime.now(),
     );
   }
 
+  // Get live station board (departures/arrivals)
+  Future<List<TrainModel>> getLiveStationBoard(String stationCode) async {
+    final uri = Uri.parse('$_apiBase/stations/$stationCode/live?hours=4');
+    
+    final response = await http.get(uri, headers: {
+      'Authorization': 'Bearer $_apiKey',
+    });
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      if (json['success'] == true && json['data'] != null) {
+        final List<dynamic> trainsData = json['data']['trains'] ?? [];
+        return trainsData.map((t) {
+          final trainInfo = t['train'] ?? {};
+          final live = t['live'] ?? {};
+          final status = t['status'] ?? {};
+          
+          bool isDelayed = live['departureDelayDisplay'] != 'On Time' && 
+                          live['arrivalDelayDisplay'] != 'On Time';
+
+          return TrainModel(
+            id: trainInfo['number'] ?? '',
+            number: trainInfo['number'] ?? '',
+            name: trainInfo['name'] ?? '',
+            status: status['isCancelled'] == true ? 'cancelled' : (isDelayed ? 'delayed' : 'on time'),
+            delayMinutes: 0,
+            currentStation: stationCode,
+            nextStation: trainInfo['destinationStationCode'] ?? '',
+            platform: t['platform'] ?? '-',
+            sourceStationCode: trainInfo['sourceStationCode'] ?? '',
+            destinationStationCode: trainInfo['destinationStationCode'] ?? '',
+            stations: [],
+            updatedAt: DateTime.now(),
+          );
+        }).toList();
+      }
+    }
+    return [];
+  }
+
+  // Find trains between two stations
+  Future<List<TrainModel>> getTrainsBetweenStations(String from, String to) async {
+    final uri = Uri.parse('$_apiBase/trains/between?from=$from&to=$to');
+    
+    final response = await http.get(uri, headers: {
+      'Authorization': 'Bearer $_apiKey',
+    });
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      if (json['success'] == true && json['data'] != null) {
+        final List<dynamic> trainsData = json['data']['trains'] ?? [];
+        return trainsData.map((t) {
+          return TrainModel(
+            id: t['trainNumber'] ?? '',
+            number: t['trainNumber'] ?? '',
+            name: t['trainName'] ?? '',
+            status: 'on time',
+            delayMinutes: 0,
+            travelTimeMinutes: t['travelTimeMinutes'] ?? 0,
+            currentStation: t['sourceStationCode'] ?? '',
+            nextStation: t['destinationStationCode'] ?? '',
+            platform: t['fromStationSchedule']?['platform']?.toString() ?? '-',
+            sourceStationCode: t['sourceStationCode'] ?? '',
+            destinationStationCode: t['destinationStationCode'] ?? '',
+            stations: [], 
+            updatedAt: DateTime.now(),
+          );
+        }).toList();
+      }
+    }
+    return [];
+  }
+
   // Get stream of all trains (for Dashboard)
   Stream<List<TrainModel>> getLiveTrains() async* {
-    // For now, return empty. In future, could return favorites or popular trains.
-    yield [];
+    // Default to Bengaluru (SBC) live board
+    try {
+      final trains = await getLiveStationBoard('SBC');
+      yield trains;
+      
+      // Periodically refresh (e.g., every 60 seconds)
+      while (true) {
+        await Future.delayed(const Duration(seconds: 60));
+        final updatedTrains = await getLiveStationBoard('SBC');
+        yield updatedTrains;
+      }
+    } catch (e) {
+      print('Error fetching live trains: $e');
+      yield [];
+    }
   }
 
   Future<void> seedInitialData() async {}

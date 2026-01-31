@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'status_badge.dart';
 import '../themes/app_themes.dart';
 
@@ -31,7 +32,7 @@ class TrainCard extends StatelessWidget {
       case 'cancelled':
         return AppThemes.cancelledRed;
       default:
-        return Colors.grey;
+        return AppThemes.textSecondary;
     }
   }
 
@@ -39,18 +40,22 @@ class TrainCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final statusColor = _getStatusColor();
 
-    return Card(
+    return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      clipBehavior: Clip.antiAlias, // Important for the left bar
+      decoration: BoxDecoration(
+        color: AppThemes.surfaceSlate,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: AppThemes.cardBorder),
+      ),
+      clipBehavior: Clip.antiAlias,
       child: InkWell(
         onTap: onTap,
         child: IntrinsicHeight(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Left status indicator bar
               Container(
-                width: 6,
+                width: 10, // Thicker bar as per design
                 color: statusColor,
               ),
               Expanded(
@@ -68,19 +73,20 @@ class TrainCard extends StatelessWidget {
                               children: [
                                 Text(
                                   trainNumber,
-                                  style: const TextStyle(
+                                  style: GoogleFonts.outfit(
                                     fontSize: 18,
-                                    fontWeight: FontWeight.w900, // Extra bold for Gen-Z feel
+                                    fontWeight: FontWeight.w900,
                                     letterSpacing: -0.5,
+                                    color: Colors.white,
                                   ),
                                 ),
                                 const SizedBox(height: 2),
                                 Text(
                                   trainName,
-                                  style: TextStyle(
+                                  style: GoogleFonts.outfit(
                                     fontSize: 14,
                                     fontWeight: FontWeight.w500,
-                                    color: Theme.of(context).colorScheme.onSurface.withOpacity(0.6),
+                                    color: AppThemes.textSecondary,
                                   ),
                                 ),
                               ],
@@ -97,32 +103,33 @@ class TrainCard extends StatelessWidget {
                         Row(
                           children: [
                             if (departureTime != null) ...[
-                              Icon(Icons.access_time_filled_rounded, 
-                                size: 16, 
-                                color: Theme.of(context).colorScheme.primary
+                              const Icon(Icons.access_time_filled_rounded, 
+                                size: 14, 
+                                color: AppThemes.primaryBlue,
                               ),
                               const SizedBox(width: 6),
                               Text(
                                 departureTime!,
-                                style: const TextStyle(
-                                  fontSize: 14,
+                                style: GoogleFonts.outfit(
+                                  fontSize: 13,
                                   fontWeight: FontWeight.w700,
+                                  color: Colors.white,
                                 ),
                               ),
                               const SizedBox(width: 20),
                             ],
                             if (platform != null) ...[
-                              Icon(Icons.train_rounded, 
-                                size: 16, 
-                                color: Theme.of(context).colorScheme.primary
+                              const Icon(Icons.train_rounded, 
+                                size: 14, 
+                                color: AppThemes.primaryBlue,
                               ),
                               const SizedBox(width: 6),
                               Text(
                                 'Platform $platform',
-                                style: TextStyle(
-                                  fontSize: 14,
+                                style: GoogleFonts.outfit(
+                                  fontSize: 13,
                                   fontWeight: FontWeight.w700,
-                                  color: Theme.of(context).colorScheme.primary,
+                                  color: AppThemes.primaryBlue,
                                 ),
                               ),
                             ],
