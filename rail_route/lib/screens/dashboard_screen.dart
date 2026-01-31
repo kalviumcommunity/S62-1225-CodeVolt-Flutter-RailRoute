@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../widgets/train_card.dart';
+import '../models/train_model.dart';
+import '../services/train_service.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -9,6 +11,7 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  final _trainService = TrainService();
   final _searchController = TextEditingController();
 
   @override
@@ -17,14 +20,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
     super.dispose();
   }
 
-  void _searchTrain() {
+  void _searchTrain() async {
     final query = _searchController.text.trim();
     if (query.isNotEmpty) {
-      Navigator.pushNamed(
-        context,
-        '/train-status',
-        arguments: query,
-      );
+      final results = await _trainService.searchTrains(query);
+      if (results.isNotEmpty && mounted) {
+        Navigator.pushNamed(
+          context,
+          '/train-status',
+          arguments: results.first, // Pass full TrainModel object
+        );
+      } else if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Train not found')),
+        );
+      }
     }
   }
 
@@ -34,6 +44,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       appBar: AppBar(
         title: const Text('RailRoute'),
         actions: [
+          // Removed Seed Data Button for Production Mode
           IconButton(
             icon: const Icon(Icons.favorite_border),
             onPressed: () {
@@ -41,9 +52,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () {
-              Navigator.pushReplacementNamed(context, '/');
+            icon: const Icon(Icons.logout_rounded),
+            tooltip: 'Sign Out',
+            onPressed: () async {
+              final shouldLogout = await showDialog<bool>(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Sign Out'),
+                  content: const Text('Are you sure you want to sign out?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, false),
+                      child: const Text('Cancel'),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(context, true),
+                      child: const Text('Sign Out'),
+                    ),
+                  ],
+                ),
+              );
+
+              if (shouldLogout == true && context.mounted) {
+                // TODO: Add AuthService.signOut() call here
+                Navigator.of(context).pushNamedAndRemoveUntil('/', (route) => false);
+              }
             },
           ),
         ],
@@ -57,7 +90,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: TextField(
                 controller: _searchController,
                 decoration: InputDecoration(
-                  hintText: 'Search train number',
+                  hintText: 'Search train number (e.g., 12951)',
                   prefixIcon: const Icon(Icons.search),
                   suffixIcon: IconButton(
                     icon: const Icon(Icons.arrow_forward),
@@ -67,14 +100,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 onSubmitted: (_) => _searchTrain(),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text(
-                    'Recent Searches',
+                   const Text(
+                    'Live Trains',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
@@ -82,31 +115,61 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                   TextButton(
                     onPressed: () {},
-                    child: const Text('Clear'),
+                    child: const Text('Refresh'),
                   ),
                 ],
               ),
             ),
-            // Mock recent searches
-            TrainCard(
-              trainNumber: '12345',
-              trainName: 'Rajdhani Express',
-              status: 'on time',
-              departureTime: '10:30 AM',
-              platform: '3',
-              onTap: () {
-                Navigator.pushNamed(context, '/train-status', arguments: '12345');
-              },
-            ),
-            TrainCard(
-              trainNumber: '67890',
-              trainName: 'Shatabdi Express',
-              status: 'delayed',
-              delayMinutes: 15,
-              departureTime: '2:45 PM',
-              platform: '5',
-              onTap: () {
-                Navigator.pushNamed(context, '/train-status', arguments: '67890');
+            // Live Stream Builder
+            StreamBuilder<List<TrainModel>>(
+              stream: _trainService.getLiveTrains(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+                
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(32.0),
+                      child: Column(
+                        children: [
+                          Icon(Icons.train_outlined, size: 48, color: Colors.grey[400]),
+                          const SizedBox(height: 16),
+                          const Text(
+                            'No active trains found.\nTap the cloud icon above to load demo data.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                }
+
+                return ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: snapshot.data!.length,
+                  itemBuilder: (context, index) {
+                    final train = snapshot.data![index];
+                    return TrainCard(
+                      trainNumber: train.number,
+                      trainName: train.name,
+                      status: train.status,
+                      delayMinutes: train.delayMinutes > 0 ? train.delayMinutes : null,
+                      departureTime: train.status == 'on time' ? 'On Time' : '+${train.delayMinutes} min',
+                      platform: train.platform,
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/train-status',
+                          arguments: train, // Passing full TrainModel
+                        );
+                      },
+                    );
+                  },
+                );
               },
             ),
             const SizedBox(height: 16),

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "555367526667",
+    "project_id": "rail-route-1999-92d40",
+    "storage_bucket": "rail-route-1999-92d40.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:555367526667:android:39220a123c9347f8e7f20e",
+        "android_client_info": {
+          "package_name": "com.example.rail_route"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6_nAVcfPKgNFr4Excoq3BrobxFlTmQgs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

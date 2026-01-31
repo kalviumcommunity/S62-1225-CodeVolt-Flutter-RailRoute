@@ -120,22 +120,24 @@ class StationTimeline extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            station.arrivalTime,
+                            station.arrivalTime ?? '--:--',
                             style: TextStyle(
                               fontSize: 13,
                               fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w500,
                               color: textColor.withOpacity(textColor.opacity * 0.7),
                             ),
                           ),
-                          const SizedBox(width: 12),
-                          Text(
-                            'Platform ${station.platform}',
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w500,
-                              color: textColor.withOpacity(textColor.opacity * 0.7),
+                          if (station.platform != null) ...[
+                            const SizedBox(width: 12),
+                            Text(
+                              'Platform ${station.platform}',
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: isCurrent ? FontWeight.w700 : FontWeight.w500,
+                                color: textColor.withOpacity(textColor.opacity * 0.7),
+                              ),
                             ),
-                          ),
+                          ],
                         ],
                       ),
                     ],
