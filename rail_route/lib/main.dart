@@ -1,28 +1,34 @@
 import 'package:flutter/material.dart';
-
-import 'screens/home_screen.dart';
-import 'screens/second_screen.dart';
+import 'themes/app_themes.dart';
+import 'screens/auth/login_screen.dart';
+import 'screens/auth/signup_screen.dart';
+import 'screens/dashboard_screen.dart';
+import 'screens/train_status_screen.dart';
+import 'screens/favorites_screen.dart';
+import 'screens/route_suggestions_screen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(const RailRouteApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class RailRouteApp extends StatelessWidget {
+  const RailRouteApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Multi-Screen Navigation Demo',
-
-      // 🔑 Initial screen
+      title: 'RailRoute',
+      theme: AppThemes.lightTheme,
+      darkTheme: AppThemes.darkTheme,
       initialRoute: '/',
-
-      // 🛣️ Named routes
       routes: {
-        '/': (context) => const HomeScreen(),
-        '/second': (context) => const SecondScreen(),
+        '/': (context) => const LoginScreen(),
+        '/signup': (context) => const SignupScreen(),
+        '/dashboard': (context) => const DashboardScreen(),
+        '/train-status': (context) => const TrainStatusScreen(),
+        '/favorites': (context) => const FavoritesScreen(),
+        '/route-suggestions': (context) => const RouteSuggestionsScreen(),
       },
     );
   }
