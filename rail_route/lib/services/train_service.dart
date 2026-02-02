@@ -37,7 +37,7 @@ class TrainService {
     final uri = Uri.parse('$_apiBase/trains/$trainNumber?dataType=$dataType');
     
     final response = await http.get(uri, headers: {
-      'Authorization': 'Bearer $_apiKey',
+      'X-API-Key': _apiKey,
     });
 
     if (response.statusCode == 200) {
@@ -186,7 +186,7 @@ class TrainService {
     final uri = Uri.parse('$_apiBase/stations/$stationCode/live?hours=4');
     
     final response = await http.get(uri, headers: {
-      'Authorization': 'Bearer $_apiKey',
+      'X-API-Key': _apiKey,
     });
 
     if (response.statusCode == 200) {
@@ -226,7 +226,7 @@ class TrainService {
     final uri = Uri.parse('$_apiBase/trains/between?from=$from&to=$to');
     
     final response = await http.get(uri, headers: {
-      'Authorization': 'Bearer $_apiKey',
+      'X-API-Key': _apiKey,
     });
 
     if (response.statusCode == 200) {
